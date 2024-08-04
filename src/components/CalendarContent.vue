@@ -2,7 +2,7 @@
   <div ref="container" class="number-axis">
     <div ref="sentinelTop" class="sentinel"></div>
     <ul>
-      <li v-for="number in numbers" :key="number">{{ number }}</li>
+      <li v-for="number in numbers" :key="number"><DayComponent :date="'23'" /></li>
     </ul>
     <div ref="sentinelBottom" class="sentinel"></div>
   </div>
@@ -10,8 +10,11 @@
 
 <script>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-
+import DayComponent from './DayComponent.vue'
 export default {
+  components: {
+    DayComponent
+  },
   setup() {
     const numbers = reactive([])
     const sentinelTop = ref(null)
@@ -34,14 +37,14 @@ export default {
       for (let i = 1; i <= 10; i++) {
         newNumbers.unshift(firstNumber - i)
       }
-      const length = numbers.length
+
       numbers.unshift(...newNumbers)
       if (numbers.length > 100) {
         numbers.splice(-10) // 删除最后10个
       }
       // 调整滚动位置以便显示加载的新内容
       nextTick(() => {
-        container.value.scrollTop += 20 * newNumbers.length // 根据实际行高调整
+        container.value.scrollTop += 2 * newNumbers.length // 根据实际行高调整
       })
     }
 
