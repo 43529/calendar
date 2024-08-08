@@ -1,23 +1,48 @@
-<script setup>
-import Header from './Header.vue'
-</script>
-
 <template>
-  <div class="backgroud">
-    <v-card class="card">
-      <Header />
-    </v-card>
-  </div>
+  <v-table>
+    <thead class="bg-primary">
+      <tr>
+        <th v-for="(value, index) in weeks" class="text-center">
+          {{ value }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in desserts" :key="item.name" class="text-center row">
+        <td>{{ item.name }}</td>
+        <td>{{ item.calories }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.calories }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.calories }}</td>
+        <td>{{ item.name }}</td>
+      </tr>
+    </tbody>
+  </v-table>
 </template>
-
+<script setup>
+const weeks = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const desserts = [
+  {
+    name: 'Frozen Yogurt',
+    calories: 159
+  },
+  {
+    name: 'Ice cream sandwich',
+    calories: 237
+  },
+  {
+    name: 'Frozen Yogurt',
+    calories: 159
+  },
+  {
+    name: 'Ice cream sandwich',
+    calories: 237
+  }
+]
+</script>
 <style scoped>
-.backgroud {
-  background-color: bisque;
-  padding: 16px;
-  height: 100vh;
-}
-.card {
-  padding: 16px;
-  height: calc(100vh - 32px);
+.row {
+  height: calc((100vh - 52px) / 4);
 }
 </style>
