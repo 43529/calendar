@@ -61,7 +61,8 @@ export default {
         weeks.splice(-10) // 删除最后10个
       }
       nextTick(() => {
-        container.value.scrollTop += 24 * newWeeks.length // 根据实际行高调整
+        const rowHeight = container.value.querySelector('li').offsetHeight // 获取第一行的高度
+        container.value.scrollTop += rowHeight * newWeeks.length
       })
     }
 
@@ -82,8 +83,8 @@ export default {
         weeks.splice(0, 10) // 删除前10个
       }
       nextTick(() => {
-        console.log(container.value.scrollTop)
-        container.value.scrollTop -= 24 * newWeeks.length // 根据实际行高调整
+        const rowHeight = container.value.querySelector('li').offsetHeight // 获取第一行的高度
+        container.value.scrollTop -= rowHeight * newWeeks.length
       })
     }
 
