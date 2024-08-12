@@ -1,22 +1,22 @@
 <template>
   <div ref="container" class="number-axis">
     <div ref="sentinelTop" class="sentinel"></div>
-    <ul>
-      <li v-for="number in numbers" :key="number"><DayComponent :date="'23'" /></li>
+    <ul class="week-container">
+      <li v-for="(week, index) in weeks" :key="index" class="week"><Week :week="week" /></li>
     </ul>
     <div ref="sentinelBottom" class="sentinel"></div>
   </div>
 </template>
-
 <script>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import DayComponent from './DayComponent.vue'
+import Week from './Week.vue'
+import dayjs from 'dayjs'
 export default {
   components: {
-    DayComponent
+    Week
   },
   setup() {
-    const numbers = reactive([])
+    const weeks = reactive([])
     const sentinelTop = ref(null)
     const sentinelBottom = ref(null)
     const observerTop = ref(null)
@@ -24,39 +24,67 @@ export default {
     const container = ref(null)
 
     // 初始化数轴数据
-    const initializeNumbers = () => {
+    const initializeWeeks = () => {
       for (let i = 0; i < 100; i++) {
-        numbers.push(i + 1)
+        const currentWeek = []
+        let startDay
+        if (i < 50) {
+          startDay = dayjs()
+            .subtract(50 - i, 'week')
+            .startOf('week')
+        } else {
+          startDay = dayjs()
+            .add(i - 50, 'week')
+            .startOf('week')
+        }
+        for (let j = 0; j < 7; j++) {
+          currentWeek.push(startDay.add(j, 'd'))
+        }
+        weeks.push(currentWeek)
       }
     }
 
     // 加载更多的较小数
     const loadMorePast = () => {
-      const firstNumber = numbers[0]
-      const newNumbers = []
+      const firstDay = weeks[0][0]
+      const newWeeks = []
       for (let i = 1; i <= 10; i++) {
-        newNumbers.unshift(firstNumber - i)
+        const currentWeek = []
+        const startDay = firstDay.subtract(i, 'week').startOf('week')
+        for (let j = 0; j < 7; j++) {
+          currentWeek.push(startDay.add(j, 'd'))
+        }
+        newWeeks.unshift(currentWeek)
       }
-
-      numbers.unshift(...newNumbers)
-      if (numbers.length > 100) {
-        numbers.splice(-10) // 删除最后10个
+      weeks.unshift(...newWeeks)
+      if (weeks.length > 100) {
+        weeks.splice(-10) // 删除最后10个
       }
-      // 调整滚动位置以便显示加载的新内容
       nextTick(() => {
-        container.value.scrollTop += 2 * newNumbers.length // 根据实际行高调整
+        container.value.scrollTop += 24 * newWeeks.length // 根据实际行高调整
       })
     }
 
     // 加载更多的较大数
     const loadMoreFuture = () => {
-      const lastNumber = numbers[numbers.length - 1]
+      const lastDay = weeks[weeks.length - 1][6]
+      const newWeeks = []
       for (let i = 1; i <= 10; i++) {
-        numbers.push(lastNumber + i)
+        const currentWeek = []
+        const startDay = lastDay.add(i, 'week').startOf('week')
+        for (let j = 0; j < 7; j++) {
+          currentWeek.push(startDay.add(j, 'd'))
+        }
+        newWeeks.push(currentWeek)
       }
-      if (numbers.length > 100) {
-        numbers.splice(0, 10) // 删除前10个
+      weeks.push(...newWeeks)
+      if (weeks.length > 100) {
+        weeks.splice(0, 10) // 删除前10个
       }
+      nextTick(() => {
+        console.log(container.value.scrollTop)
+        container.value.scrollTop -= 24 * newWeeks.length // 根据实际行高调整
+      })
     }
 
     // 观察者回调函数
@@ -81,15 +109,16 @@ export default {
     }
 
     onMounted(() => {
-      initializeNumbers()
+      initializeWeeks()
       createObserver()
       nextTick(() => {
+        console.log(container.value.scrollHeight)
         container.value.scrollTop = container.value.scrollHeight / 2 // 初始位置设置为中间
       })
     })
 
     return {
-      numbers,
+      weeks,
       sentinelTop,
       sentinelBottom,
       container
@@ -101,10 +130,17 @@ export default {
 <style>
 .number-axis {
   height: calc(100vh - 2px);
-  background-color: aqua;
   overflow-y: auto;
 }
 .sentinel {
   height: 1px;
+}
+.week-container {
+  list-style: none;
+  /* height: calc(100vh - 4px); */
+  overflow: auto;
+}
+.week {
+  height: calc((100vh - 4px) / 4);
 }
 </style>
