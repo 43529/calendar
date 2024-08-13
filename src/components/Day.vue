@@ -1,6 +1,6 @@
 <template>
   <div :class="dayjs(date).isSame(dayjs(), 'day') ? 'today' : 'day'">
-    {{ dayjs(date).format('YYYY-MM-DD') }}
+    {{ dayjs(date).format('DD') }}
   </div>
 </template>
 
@@ -15,6 +15,11 @@ const props = defineProps({
 })
 </script>
 <style scoped>
+div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .day {
   border: 1px solid #ccc;
 }
