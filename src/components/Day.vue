@@ -19,12 +19,13 @@ div {
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid #d1d1d1;
+  color: #2c3e50;
 }
-.day {
-  border: 1px solid #ccc;
+div:hover {
+  background-color: #e0e0e0;
 }
 .today {
-  border: 1px solid #ccc;
-  background-color: aquamarine;
+  background-color: #a3d1ff;
 }
 </style>
