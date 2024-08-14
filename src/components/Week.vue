@@ -1,6 +1,6 @@
 <template>
   <div class="week">
-    <Day v-for="(day, index) of week" :key="index" :date="day.format('YYYY/MM/DD')" />
+    <Day v-for="(day, index) of week" :key="index" :date="day" />
   </div>
 </template>
 
@@ -18,5 +18,6 @@ const props = defineProps({
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  height: 100%;
 }
 </style>

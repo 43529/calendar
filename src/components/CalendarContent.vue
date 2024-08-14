@@ -1,8 +1,8 @@
 <template>
   <div ref="container" class="number-axis">
     <div ref="sentinelTop" class="sentinel"></div>
-    <ul>
-      <li v-for="(week, index) in weeks" :key="index"><Week :week="week" /></li>
+    <ul class="week-container">
+      <li v-for="(week, index) in weeks" :key="index" class="week"><Week :week="week" /></li>
     </ul>
     <div ref="sentinelBottom" class="sentinel"></div>
   </div>
@@ -61,7 +61,8 @@ export default {
         weeks.splice(-10) // 删除最后10个
       }
       nextTick(() => {
-        container.value.scrollTop += 24 * newWeeks.length // 根据实际行高调整
+        const rowHeight = container.value.querySelector('li').offsetHeight // 获取第一行的高度
+        container.value.scrollTop += rowHeight * newWeeks.length
       })
     }
 
@@ -82,8 +83,8 @@ export default {
         weeks.splice(0, 10) // 删除前10个
       }
       nextTick(() => {
-        console.log(container.value.scrollTop);
-        container.value.scrollTop -= 24 * newWeeks.length // 根据实际行高调整
+        const rowHeight = container.value.querySelector('li').offsetHeight // 获取第一行的高度
+        container.value.scrollTop -= rowHeight * newWeeks.length
       })
     }
 
@@ -133,5 +134,13 @@ export default {
 }
 .sentinel {
   height: 1px;
+}
+.week-container {
+  list-style: none;
+  /* height: calc(100vh - 4px); */
+  overflow: auto;
+}
+.week {
+  height: calc((100vh - 4px) / 4);
 }
 </style>
