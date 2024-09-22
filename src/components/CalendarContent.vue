@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="number-axis">
+  <div ref="container" class="axis">
     <div ref="sentinelTop" class="sentinel"></div>
     <ul class="week-container">
       <li v-for="(week, index) in weeks" :key="index" class="week"><Week :week="week" /></li>
@@ -8,14 +8,14 @@
   </div>
 </template>
 <script>
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import { inject, ref, reactive, onMounted, nextTick } from 'vue'
 import Week from './Week.vue'
-import dayjs from 'dayjs'
 export default {
   components: {
     Week
   },
   setup() {
+    const dayjs = inject('dayjs')
     const weeks = reactive([])
     const sentinelTop = ref(null)
     const sentinelBottom = ref(null)
@@ -128,10 +128,14 @@ export default {
 </script>
 
 <style>
-.number-axis {
+.axis {
   height: calc(100vh - 2px);
   overflow-y: auto;
 }
+.axis::-webkit-scrollbar {
+  display: none;
+}
+
 .sentinel {
   height: 1px;
 }

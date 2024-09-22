@@ -1,16 +1,18 @@
 import { createApp } from 'vue'
-import 'vuetify/styles'
 import './assets/base.css'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-
-// Components
+import { createPinia } from 'pinia'
 import App from './App.vue'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import 'dayjs/locale/zh-cn'
+import dayjs from 'dayjs'
+// 使用插件
+dayjs.extend(localizedFormat)
+dayjs.locale('zh-cn')
 
-const vuetify = createVuetify({
-  components,
-  directives
-})
+const pinia = createPinia()
+const app = createApp(App)
 
-createApp(App).use(vuetify).mount('#app')
+// 将 dayjs 挂载到全局属性中
+app.provide('dayjs', dayjs)
+app.use(pinia)
+app.mount('#app')
