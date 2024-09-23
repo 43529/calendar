@@ -3,7 +3,7 @@
     @click="trigger"
     :class="dayjs(date).valueOf() === dayjs(store.date).valueOf() ? 'today' : 'day'"
   >
-    {{ dayjs(date).format('MM-DD') }}
+    {{ dayjs(date).format('YYYY-MM-DD') }}
   </div>
 </template>
 
@@ -21,12 +21,6 @@ const props = defineProps({
     required: true
   }
 })
-if (props.date === store.date) {
-  console.log('-------------------')
-  console.log(store.date)
-  console.log(props.date)
-  console.log('-------------------')
-}
 </script>
 <style scoped>
 div {
