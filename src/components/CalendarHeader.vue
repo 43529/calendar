@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <ul class="week-container">
-      <li v-for="(week, index) in weeks" :key="index" class="week">{{ week }}</li>
+      <li v-for="(week, index) in weeks" :key="index" class="week">
+        {{ week }}
+      </li>
     </ul>
   </div>
 </template>
@@ -10,6 +12,9 @@ import { reactive } from 'vue'
 const weeks = reactive(['一', '二', '三', '四', '五', '六', '日'])
 </script>
 <style scoped>
+.header {
+  background-color: #fff;
+}
 .week-container {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

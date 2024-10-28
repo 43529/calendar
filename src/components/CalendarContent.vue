@@ -9,13 +9,13 @@
 </template>
 <script>
 import { inject, ref, reactive, onMounted, nextTick } from 'vue'
+import dayjs from 'dayjs'
 import Week from './Week.vue'
 export default {
   components: {
     Week
   },
   setup() {
-    const dayjs = inject('dayjs')
     const weeks = reactive([])
     const sentinelTop = ref(null)
     const sentinelBottom = ref(null)
