@@ -1,7 +1,7 @@
 <template>
   <div>
     <button @click="changeColor">123</button>
-    <div id="moon"></div>
+    <div id="moon" ref="month"></div>
     <div id="earth" ref="earth"></div>
   </div>
 </template>
@@ -11,19 +11,26 @@ import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
 const dateStore = useDateStore()
 const earth = ref()
+const month = ref()
+const computeMoonPosition = date => {
+  const width = parseInt((400 / 30) * lunisolar(date).lunar.day)
+  console.log(width)
+  if (lunisolar(date).lunar.day <= 15) {
+    earth.value.style.left =
+      month.value.getBoundingClientRect().left - width + 'px'
+  } else {
+    earth.value.style.left =
+      month.value.getBoundingClientRect().left + 400 - width + 'px'
+  }
+}
 onMounted(() => {
-  const width = parseInt((400 / 30) * lunisolar(dateStore.date).lunar.day)
-  earth.value.style.left =
-    earth.value.getBoundingClientRect().left - width + 'px'
+  computeMoonPosition(dateStore.date)
 })
 
 watch(
   () => dateStore.date,
-  (newVal, oldVal) => {
-    const width = parseInt((400 / 30) * lunisolar(newVal).lunar.day)
-    console.log(width)
-    earth.value.style.left =
-      earth.value.getBoundingClientRect().left - width + 'px'
+  newVal => {
+    computeMoonPosition(newVal)
   },
 )
 </script>
@@ -48,7 +55,7 @@ div {
   position: absolute;
   width: 200px;
   height: 200px;
-  background-color: red;
+  background-color: #fff;
   border-radius: 50%;
   left: calc(50% + 100px);
   top: calc(50% - 100px);
