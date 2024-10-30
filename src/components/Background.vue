@@ -14,7 +14,6 @@ const earth = ref()
 const month = ref()
 const computeMoonPosition = date => {
   const width = parseInt((400 / 30) * lunisolar(date).lunar.day)
-  console.log(width)
   if (lunisolar(date).lunar.day <= 15) {
     earth.value.style.left =
       month.value.getBoundingClientRect().left - width + 'px'
