@@ -1,17 +1,12 @@
 <script setup>
-import { nextTick } from 'vue'
 import CalendarContent from './CalendarContent.vue'
 import CalendarHeader from './CalendarHeader.vue'
 import Background from './Background.vue'
-import { openContextMenu } from '@/components/ContextMenu/index'
-nextTick(() => {
-  openContextMenu()
-})
 </script>
 
 <template>
   <Background />
-  <div>
+  <div id="calender">
     <CalendarHeader />
     <CalendarContent />
   </div>

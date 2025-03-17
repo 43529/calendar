@@ -8,14 +8,16 @@
   </div>
 </template>
 <script>
-import { inject, ref, reactive, onMounted, nextTick } from 'vue'
+import { inject, ref, reactive, onMounted, nextTick,provide } from 'vue'
 import dayjs from 'dayjs'
 import Week from './Week.vue'
+import { contextMenu } from "@/components/ContextMenu/index";
 export default {
   components: {
     Week
   },
   setup() {
+    provide('contextMenu', contextMenu)
     const weeks = reactive([])
     const sentinelTop = ref(null)
     const sentinelBottom = ref(null)

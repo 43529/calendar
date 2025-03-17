@@ -1,24 +1,25 @@
 <template>
   <div
     @click="trigger"
+    @contextmenu="handleContextMenu"
     :class="[
       dayjs(date).valueOf() === dayjs(store.date).valueOf() ? 'today' : 'day',
       dayjs(date).month() === store.date.month() ? 'current-month' : '',
     ]"
+    :id="dayjs(date).valueOf()"
   >
     <div>{{ dayjs(date).format('MM-DD') }}</div>
-    <div>
+    <div >
       {{ getLunarDate(date) }}
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, inject } from 'vue'
+import { defineProps, inject,nextTick } from 'vue'
 import dayjs from 'dayjs'
 import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
-
 const store = useDateStore()
 const trigger = () => {
   store.setDate(props.date)
@@ -29,6 +30,10 @@ const props = defineProps({
     required: true,
   },
 })
+const contextMenu = inject('contextMenu')
+const handleContextMenu = (e) => {
+  contextMenu.openMenu(e);
+};
 /**
  * 根据给定的公历日期返回农历日期
  *
