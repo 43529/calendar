@@ -1,16 +1,38 @@
 <template>
-  <div  id="contextmenu" class="context-menu" >
+  <div id="contextmenu" class="context-menu">
     <ul class="menu-list">
-      <li class="menu-item">复制</li>
-      <li class="menu-item">粘贴</li>
-      <li class="menu-item disabled">剪切</li>
-      <li class="menu-item">删除</li>
-      <li class="menu-item">属性</li>
+      <li class="menu-item" @click="setMark">标记</li>
+      <li class="menu-item" @click="deleteMark">粘贴</li>
     </ul>
   </div>
 </template>
-<style scoped>
+<script setup>
+import StorageManager from "@/utils/storageManager";
+import { defineProps } from "vue";
+const props = defineProps({
+  target: {
+    type: Object,
+    required: true
+  },
+})
+const { set, get } = StorageManager
+const setMark = async () => {
+  console.log(props.target.id);
+  console.log(get['mark']);
+  const oldMarks = await get('mark');
+  console.log(oldMarks);
 
+  set('mark', [...(oldMarks ? oldMarks : []), props.target.id]);
+
+}
+const deleteMark = async () => {
+  const currentMarks = await get('mark');
+  console.log(currentMarks);
+  
+
+}
+</script>
+<style scoped>
 .context-menu {
   position: absolute;
   background-color: #fff;

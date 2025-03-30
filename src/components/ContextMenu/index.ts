@@ -8,14 +8,13 @@ const createContextMenu = () => {
 
   const openMenu = (e: MouseEvent) => {
     e.preventDefault();
-    console.log(e.currentTarget);
 
     scope = document.getElementById('calender');
 
     if (!isShow) {
       containerEl = document.createElement('div');
       containerEl.style.position = 'absolute';
-      const vnode = h(Menu);
+      const vnode = h(Menu, { target: e.currentTarget as EventTarget & Record<string, any> });
       render(vnode, containerEl);
       isShow = true;
     }

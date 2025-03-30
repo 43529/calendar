@@ -3,6 +3,9 @@
   "version": "0.0.0.1",
   "manifest_version": 3,
   "description": "A calendar tab for your browser",
+  "permissions": [
+    "storage"
+  ],
   "icons": {
     "16": "./assets/icons/icon16x16.png",
     "32": "./assets/icons/icon32x32.png",
