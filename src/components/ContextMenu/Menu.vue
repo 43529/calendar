@@ -2,34 +2,32 @@
   <div id="contextmenu" class="context-menu">
     <ul class="menu-list">
       <li class="menu-item" @click="setMark">标记</li>
-      <li class="menu-item" @click="deleteMark">粘贴</li>
+      <li class="menu-item" @click="deleteMark">清除标记</li>
     </ul>
   </div>
 </template>
 <script setup>
-import StorageManager from "@/utils/storageManager";
 import { defineProps } from "vue";
+import { useMarkStore } from "@/stores/marks";
 const props = defineProps({
   target: {
     type: Object,
     required: true
   },
 })
-const { set, get } = StorageManager
-const setMark = async () => {
-  console.log(props.target.id);
-  console.log(get['mark']);
-  const oldMarks = await get('mark');
-  console.log(oldMarks);
-
-  set('mark', [...(oldMarks ? oldMarks : []), props.target.id]);
+const storage = useMarkStore();
+const setMark = () => {
+  const oldMarks = storage?.marks || [];
+  const newMarks = [...oldMarks, props.target.id];
+  storage.setMarks(newMarks);
 
 }
-const deleteMark = async () => {
-  const currentMarks = await get('mark');
-  console.log(currentMarks);
-  
-
+const deleteMark = () => {
+  const oldMarks = storage?.marks ?? [];
+  console.log(oldMarks);
+  console.log(Array.isArray(oldMarks)); // 检查是否为数组
+  const newMarks = oldMarks.filter((item) => item !== props.target.id.toString());
+  storage.setMarks(newMarks);
 }
 </script>
 <style scoped>

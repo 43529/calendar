@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="changeColor">123</button>
     <div id="moon" ref="month"></div>
     <div id="earth" ref="earth"></div>
   </div>

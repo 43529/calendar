@@ -1,26 +1,30 @@
 <template>
-  <div
-    @click="trigger"
-    @contextmenu="handleContextMenu"
-    :class="[
-      dayjs(date).valueOf() === dayjs(store.date).valueOf() ? 'today' : 'day',
-      dayjs(date).month() === store.date.month() ? 'current-month' : '',
-    ]"
-    :id="dayjs(date).valueOf()"
-  >
+  <div @click="trigger" @contextmenu="handleContextMenu" :class="[
+    dayjs(date).valueOf() === dayjs(store.date).valueOf() ? 'today' : 'day',
+    dayjs(date).month() === store.date.month() ? 'current-month' : '',
+    markStore?.marks?.includes(
+      dayjs(date).valueOf().toString(),
+    )
+      ? 'marked'
+      : '',
+
+  ]" :id="dayjs(date).valueOf()">
     <div>{{ dayjs(date).format('MM-DD') }}</div>
-    <div >
+    <div>
       {{ getLunarDate(date) }}
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, inject,nextTick } from 'vue'
+import { defineProps, inject, nextTick, watch } from 'vue'
+import { useMarkStore } from '@/stores/marks'
 import dayjs from 'dayjs'
 import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
 const store = useDateStore()
+const markStore = useMarkStore()
+
 const trigger = () => {
   store.setDate(props.date)
 }
@@ -57,27 +61,42 @@ div {
   align-items: center;
   flex-direction: column;
 }
+
 .day {
   cursor: pointer;
   color: #a5a5a5;
 }
+
 .day:hover {
-  background-color: #ececec2d ;
-  border-radius: 10px; /* 圆角大小 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
+  background-color: #ececec2d;
+  border-radius: 10px;
+  /* 圆角大小 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* 卡片阴影 */
   border: 1px solid #ddd;
   color: #283949;
 }
+
 .today {
-  border-radius: 10px; /* 圆角大小 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
+  border-radius: 10px;
+  /* 圆角大小 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* 卡片阴影 */
   border: 2px solid #4a5996;
 }
+
 .today:hover {
-  border-radius: 10px; /* 圆角大小 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
+  border-radius: 10px;
+  /* 圆角大小 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* 卡片阴影 */
 }
+
 .current-month {
   color: #283949;
+}
+
+.marked {
+  background-color: #9fb0f5;
 }
 </style>
