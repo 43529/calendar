@@ -20,6 +20,7 @@ const weeks = reactive(['一', '二', '三', '四', '五', '六', '日'])
   grid-template-columns: repeat(7, 1fr);
   height: 48px;
   border-bottom: 1px solid #bfbfbf;
+  margin: 0;
 }
 .week {
   height: 100%;

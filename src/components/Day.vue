@@ -8,12 +8,13 @@
       ? 'marked'
       : '',
 
-  ]" :id="dayjs(date).valueOf()">
+  ]" :id="dayjs(date).valueOf()" ref="box">
     <div>{{ dayjs(date).format('MM-DD') }}</div>
     <div>
       {{ getLunarDate(date) }}
     </div>
   </div>
+  <div v-if="isExpanded" ref="overlay" class="overlay" @click="closeOverlay"></div>
 </template>
 
 <script setup>
@@ -22,11 +23,63 @@ import { useMarkStore } from '@/stores/marks'
 import dayjs from 'dayjs'
 import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
+import { ref } from "vue"; // 引入 Vue 的 ref
+import { gsap } from "gsap"; // 引入 GSAP
 const store = useDateStore()
 const markStore = useMarkStore()
 
-const trigger = () => {
+const box = ref(null);
+const overlay = ref(null);
+
+// 控制遮罩层是否显示
+const isExpanded = ref(false);
+const position = ref({ x: 0, y: 0 });
+// 点击事件处理函数
+const expandOverlay = (position) => {
+  if (!isExpanded.value) {
+    // 显示遮罩层
+    isExpanded.value = true;
+
+    // 等待 DOM 更新后执行动画
+    nextTick(() => {
+      gsap.set(overlay.value, {
+        top: position.value.y, // 设置初始顶部位置
+        left: position.value.x// 设置初始左侧位置
+      });
+      gsap.to(overlay.value, {
+        duration: 1,
+        width: "100vw", // 占满屏幕宽度
+        height: "100vh", // 占满屏幕高度
+        top: "0", // 调整到顶部
+        left: "0", // 调整到左侧
+        transform: "none", // 移除初始的 transform 居中
+        ease: "power2.inOut" // 缓动效果
+      });
+    });
+  }
+}
+const closeOverlay = () => {
+  gsap.to(overlay.value, {
+    duration: 1,
+    width: "0",
+    height: "0",
+    top: position.value.y, 
+    left: position.value.x,
+    transform: "translate(-50%, -50%)",
+    ease: "power2.inOut",
+    onComplete: () => {
+      isExpanded.value = false; // 动画完成后隐藏遮罩层
+    }
+  });
+}
+const trigger = (e) => {
+  console.log(e);
+  position.value = {
+    x: e.clientX,
+    y: e.clientY,
+  }
   store.setDate(props.date)
+  expandOverlay(position)
 }
 const props = defineProps({
   date: {
@@ -60,6 +113,7 @@ div {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  border-radius: 10px;
 }
 
 .day {
@@ -68,7 +122,6 @@ div {
 }
 
 .day:hover {
-  background-color: #ececec2d;
   border-radius: 10px;
   /* 圆角大小 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -97,6 +150,17 @@ div {
 }
 
 .marked {
-  background-color: #9fb0f5;
+  background-color: #d2d8f0;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+  transform: translate(-50%, -50%);
+
 }
 </style>

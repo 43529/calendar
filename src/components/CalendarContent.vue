@@ -131,7 +131,7 @@ export default {
 
 <style>
 .axis {
-  height: calc(100vh - 2px);
+  height: calc(100vh - 48px);
   overflow-y: auto;
 }
 .axis::-webkit-scrollbar {
