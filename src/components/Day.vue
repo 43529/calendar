@@ -14,7 +14,8 @@
       {{ getLunarDate(date) }}
     </div>
   </div>
-  <div v-if="isExpanded" ref="overlay" class="overlay" @click="closeOverlay"></div>
+  <div v-if="isExpanded" ref="overlay" class="overlay"><todo-list v-show="todoVisible" :closeOverlay="closeOverlay" />
+  </div>
 </template>
 
 <script setup>
@@ -24,7 +25,8 @@ import dayjs from 'dayjs'
 import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
 import { ref } from "vue"; // 引入 Vue 的 ref
-import { gsap } from "gsap"; // 引入 GSAP
+import { gsap } from "gsap";
+import TodoList from './TodoList.vue' // 引入 GSAP
 const store = useDateStore()
 const markStore = useMarkStore()
 
@@ -34,6 +36,7 @@ const overlay = ref(null);
 // 控制遮罩层是否显示
 const isExpanded = ref(false);
 const position = ref({ x: 0, y: 0 });
+const todoVisible = ref(null);
 // 点击事件处理函数
 const expandOverlay = (position) => {
   if (!isExpanded.value) {
@@ -47,28 +50,34 @@ const expandOverlay = (position) => {
         left: position.value.x// 设置初始左侧位置
       });
       gsap.to(overlay.value, {
-        duration: 1,
+        duration: 0.5,
         width: "100vw", // 占满屏幕宽度
         height: "100vh", // 占满屏幕高度
         top: "0", // 调整到顶部
         left: "0", // 调整到左侧
         transform: "none", // 移除初始的 transform 居中
-        ease: "power2.inOut" // 缓动效果
+        ease: "power2.inOut", // 缓动效果
+        onComplete: () => {
+          // 动画完成后的回调（如果需要）
+          todoVisible.value = true;
+        }
       });
     });
   }
 }
 const closeOverlay = () => {
+  todoVisible.value = false;
   gsap.to(overlay.value, {
-    duration: 1,
+    duration: 0.5,
     width: "0",
     height: "0",
-    top: position.value.y, 
+    top: position.value.y,
     left: position.value.x,
     transform: "translate(-50%, -50%)",
     ease: "power2.inOut",
     onComplete: () => {
       isExpanded.value = false; // 动画完成后隐藏遮罩层
+
     }
   });
 }
@@ -159,7 +168,8 @@ div {
   left: 50%;
   width: 0;
   height: 0;
-  background-color: rgba(0, 0, 0, 0.8); /* 半透明黑色背景 */
+  background-color: rgba(0, 0, 0, 0.8);
+  /* 半透明黑色背景 */
   transform: translate(-50%, -50%);
 
 }
