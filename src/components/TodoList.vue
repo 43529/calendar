@@ -1,5 +1,6 @@
 <template>
     <div class="todo-list">
+        <!-- <div style="height: 100%;"> -->
         <h2>待办事项</h2>
 
         <div class="input-row">
@@ -34,11 +35,13 @@
             <span>总计: {{ todos.length }} / 完成: {{ doneCount }}</span>
             <button @click="clearDone" class="clear">清除已完成</button>
         </div>
+        <!-- </div> -->
+
     </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 
 const STORAGE_KEY = 'todo-list-vue-basic'
 
@@ -55,11 +58,28 @@ const props = defineProps({
 })
 
 function callCloseOverlay() {
-    
+
     if (typeof props.closeOverlay === 'function') {
         props.closeOverlay()
     }
 }
+
+function handleGlobalKeydown(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        if (editingId.value != null) {
+            cancelEdit()
+        } else {
+            callCloseOverlay()
+        }
+    }
+}
+onMounted(() => {
+    window.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleGlobalKeydown)
+})
 
 function load() {
     try {
@@ -125,13 +145,18 @@ function clearDone() {
 
 <style scoped>
 .todo-list {
-    max-width: 480px;
-    margin: 16px auto;
+    margin: 0 auto;
     padding: 12px;
-    border: 1px solid #e6e6e6;
     border-radius: 6px;
     background: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+
+    width: clamp(640px, 38vw, 1080px);
+    box-sizing: border-box;
+
+    /* 推荐两选一：基于视口的最大高度（稳健） */
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    min-height: 0;
 }
 
 h2 {
@@ -165,6 +190,11 @@ h2 {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
 }
 
 .list li {
