@@ -1,12 +1,17 @@
 <template>
-    <div class="todo-list">
-        <!-- <div style="height: 100%;"> -->
-        <h2>待办事项</h2>
+    <div class="todo-list" @click.stop>
+        <h2>待办</h2>
 
-        <div class="input-row">
-            <input v-model="newTodo" @keyup.enter="addTodo" placeholder="添加新的待办，回车提交" class="new-input" />
-            <button @click="addTodo" class="add-btn">添加</button>
-            <button @click="callCloseOverlay" class="add-btn">关闭外部</button>
+        <div class="w-full flex items-center gap-2">
+            <input v-model="newTodo" @keyup.enter="addTodo" placeholder="添加新的待办，回车提交"
+                class="flex-1 min-w-0 px-3 py-2 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            <button @click="addTodo" class="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                添加
+            </button>
+            <button @click="callCloseOverlay"
+                class="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                关闭
+            </button>
         </div>
 
         <div v-if="todos.length === 0" class="empty">暂无待办</div>

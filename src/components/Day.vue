@@ -14,7 +14,8 @@
       {{ getLunarDate(date) }}
     </div>
   </div>
-  <div v-if="isExpanded" ref="overlay" class="overlay"><todo-list v-show="todoVisible" :closeOverlay="closeOverlay" />
+  <div v-if="isExpanded" ref="overlay" class="overlay" @click="closeOverlay"><todo-list v-show="todoVisible"
+      :closeOverlay="closeOverlay" />
   </div>
 </template>
 
