@@ -1,8 +1,8 @@
 <template>
-    <div class="todo-list" @click.stop>
-        <h2>待办</h2>
+    <div class="mx-auto p-3 rounded-md bg-white max-w-[1080px] w-full box-border max-h-[calc(100vh-48px)] overflow-y-auto"
+        @click.stop>
 
-        <div class="w-full flex items-center gap-2">
+        <div class="w-full flex gap-2 items-stretch">
             <input v-model="newTodo" @keyup.enter="addTodo" placeholder="添加新的待办，回车提交"
                 class="flex-1 min-w-0 px-3 py-2 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
             <button @click="addTodo" class="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
@@ -14,33 +14,48 @@
             </button>
         </div>
 
-        <div v-if="todos.length === 0" class="empty">暂无待办</div>
+        <!-- 明确的分割线元素 -->
+        <div class="w-full h-px bg-gray-200 my-4" aria-hidden="true"></div>
 
-        <ul class="list">
-            <li v-for="item in todos" :key="item.id" :class="{ done: item.done }">
-                <label>
-                    <input type="checkbox" v-model="item.done" />
-                    <span class="text" @dblclick="startEdit(item)">{{ item.text }}</span>
-                </label>
+        <div v-if="todos.length === 0" class="text-gray-500 py-3 text-center">暂无待办</div>
 
-                <div class="actions">
-                    <button @click="startEdit(item)" class="edit">编辑</button>
-                    <button @click="removeTodo(item.id)" class="remove">删除</button>
+        <ul
+            class="w-full list-none p-0 m-0 divide-y divide-gray-200 max-h-[calc(100vh-220px)] overflow-y-auto -webkit-overflow-scrolling-touch">
+            <li v-for="item in todos" :key="item.id" :class="item.done ? 'line-through text-gray-400' : ''"
+                class="flex flex-col md:flex-row md:items-center md:justify-between px-2 py-3">
+                <div v-if="editingId !== item.id" class="flex items-center gap-2 w-full">
+                    <label class="flex items-center gap-2 flex-1">
+                        <input type="checkbox" v-model="item.done" class="h-4 w-4" />
+                        <span class="truncate" @dblclick="startEdit(item)">{{ item.text }}</span>
+                    </label>
+
+                    <div class="flex items-center gap-2 ml-2">
+                        <button @click="startEdit(item)"
+                            class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded px-2 py-1 cursor-pointer">编辑</button>
+                        <button @click="removeTodo(item.id)"
+                            class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded px-2 py-1 cursor-pointer">删除</button>
+                    </div>
                 </div>
 
-                <div v-if="editingId === item.id" class="edit-row">
-                    <input v-model="editText" @keyup.enter="confirmEdit" @keyup.esc="cancelEdit" />
-                    <button @click="confirmEdit">保存</button>
-                    <button @click="cancelEdit">取消</button>
+                <div v-if="editingId === item.id" class="flex gap-2 mt-2 md:mt-2 w-full">
+                    <input v-model="editText" @keyup.enter="confirmEdit" @keyup.esc="cancelEdit"
+                        class="flex-1 px-2 py-1 text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <button @click="confirmEdit"
+                        class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded px-2 py-1 cursor-pointer">保存</button>
+                    <button @click="cancelEdit"
+                        class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded px-2 py-1 cursor-pointer">取消</button>
                 </div>
             </li>
         </ul>
 
-        <div class="footer" v-if="todos.length">
-            <span>总计: {{ todos.length }} / 完成: {{ doneCount }}</span>
-            <button @click="clearDone" class="clear">清除已完成</button>
+        <div v-if="todos.length"
+            class="w-full flex items-center justify-between mt-3 pt-3 border-t border-gray-200 text-gray-600">
+            <p>总计: {{ todos.length }} / 完成: {{ doneCount }}</p>
+            <button v-if="todos.length !== 0" @click="clearDone"
+                class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 cursor-pointer transition-colors">
+                清除已完成
+            </button>
         </div>
-        <!-- </div> -->
 
     </div>
 </template>
@@ -148,108 +163,7 @@ function clearDone() {
 }
 </script>
 
+<!-- 原生 CSS 已移除，样式由 Tailwind 工具类提供 -->
 <style scoped>
-.todo-list {
-    margin: 0 auto;
-    padding: 12px;
-    border-radius: 6px;
-    background: #fff;
-
-    width: clamp(640px, 38vw, 1080px);
-    box-sizing: border-box;
-
-    /* 推荐两选一：基于视口的最大高度（稳健） */
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
-    min-height: 0;
-}
-
-h2 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-}
-
-.input-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.new-input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.add-btn {
-    padding: 8px 12px;
-    border: none;
-    background: #42b983;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    max-height: calc(100vh - 220px);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-
-}
-
-.list li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 6px;
-    border-top: 1px solid #f0f0f0;
-}
-
-.list li.done .text {
-    text-decoration: line-through;
-    color: #999;
-}
-
-.actions button {
-    margin-left: 6px;
-    padding: 4px 8px;
-    border: none;
-    background: #f5f5f5;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.edit-row {
-    margin-top: 8px;
-    display: flex;
-    gap: 6px;
-}
-
-.empty {
-    color: #888;
-    padding: 12px 0;
-    text-align: center;
-}
-
-.footer {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #666;
-}
-
-.clear {
-    padding: 6px 10px;
-    border: none;
-    background: #ff6b6b;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-}
+/* intentionally left blank */
 </style>
