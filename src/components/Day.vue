@@ -21,7 +21,7 @@
 
 <script setup>
 import { defineProps, inject, nextTick, watch } from 'vue'
-import { useMarkStore } from '@/stores/marks'
+import { useMarksStore } from '@/stores/marks.ts'
 import dayjs from 'dayjs'
 import { useDateStore } from '@/stores/date'
 import lunisolar from 'lunisolar'
@@ -29,7 +29,7 @@ import { ref } from "vue"; // 引入 Vue 的 ref
 import { gsap } from "gsap";
 import TodoList from './TodoList.vue' // 引入 GSAP
 const store = useDateStore()
-const markStore = useMarkStore()
+const markStore = useMarksStore()
 
 const box = ref(null);
 const overlay = ref(null);

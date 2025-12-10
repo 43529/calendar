@@ -8,14 +8,14 @@
 </template>
 <script setup>
 import { defineProps } from "vue";
-import { useMarkStore } from "@/stores/marks";
+import { useMarksStore } from "@/stores/marks.ts";
 const props = defineProps({
   target: {
     type: Object,
     required: true
   },
 })
-const storage = useMarkStore();
+const storage = useMarksStore();
 const setMark = () => {
   const oldMarks = storage?.marks || [];
   const newMarks = [...oldMarks, props.target.id];
