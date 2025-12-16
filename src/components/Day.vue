@@ -14,8 +14,8 @@
       {{ getLunarDate(date) }}
     </div>
   </div>
-  <div v-if="isExpanded" ref="overlay" class="overlay" @click="closeOverlay"><todo-list v-show="todoVisible"
-      :closeOverlay="closeOverlay" />
+  <div v-if="isExpanded" ref="overlay" class="overlay" @click="closeOverlay">
+    <todo-list v-show="todoVisible" :today="date" :closeOverlay="closeOverlay"  />
   </div>
 </template>
 
@@ -83,7 +83,6 @@ const closeOverlay = () => {
   });
 }
 const trigger = (e) => {
-  console.log(e);
   position.value = {
     x: e.clientX,
     y: e.clientY,

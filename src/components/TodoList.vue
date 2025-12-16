@@ -62,8 +62,19 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-
-const STORAGE_KEY = 'todo-list-vue-basic'
+import { storage } from '@/stores/marks.ts'
+import dayjs from 'dayjs'
+const props = defineProps({
+    closeOverlay: {
+        type: Function,
+    },
+    today: {
+        type: [String, Number, Date, Object],
+        required: true
+    }
+})
+const timestamp = computed(() => dayjs(props.today).startOf('day').valueOf())
+const STORAGE_KEY = 'todo-list'
 
 const newTodo = ref('')
 const todos = ref([])
@@ -71,11 +82,7 @@ const todos = ref([])
 const editingId = ref(null)
 const editText = ref('')
 
-const props = defineProps({
-    closeOverlay: {
-        type: Function,
-    }
-})
+
 
 function callCloseOverlay() {
 
@@ -101,19 +108,23 @@ onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleGlobalKeydown)
 })
 
-function load() {
+async function load() {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY)
-        if (raw) todos.value = JSON.parse(raw)
-    } catch (e) {
+        const all = await storage.get(STORAGE_KEY) || {}
+        const raw = all[timestamp.value]
+        todos.value = Array.isArray(raw) ? raw : []
+    } catch {
         todos.value = []
     }
 }
-function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos.value))
+async function save() {
+    const allData = await storage.get(STORAGE_KEY) || {}
+    allData[timestamp.value] = todos.value
+    await storage.set(STORAGE_KEY, allData)
 }
 
 load()
+watch(timestamp, load)
 watch(todos, save, { deep: true })
 
 function addTodo() {

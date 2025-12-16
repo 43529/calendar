@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 const isExt = typeof chrome !== "undefined" && !!chrome.storage?.local;
 
 /** 统一封装存储层，让 dev 环境自动 fallback 到 localStorage */
-const storage = {
+export const storage = {
   async get<T = unknown>(key: string): Promise<T | null> {
     if (isExt) {
       return new Promise((resolve) => {
